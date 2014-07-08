@@ -1,0 +1,34 @@
+{
+  "name": "redmine-issues",
+  "description": "NodeJs Redmine Issues API Client",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jan Sanchez A.",
+    "email": "joejansanchez@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jansanchez/redmine-issues"
+  },
+  "main": "./index.js",
+  "bin": {
+    "redmine": "./bin/redmine-issues.js"
+  },
+  "dependencies": {
+    "commander": "2.1.0",
+    "mkdirp": "~0.3.5",
+    "monocle": "1.1.51"
+  },
+  "devDependencies": {
+    "coffee-script": "*",
+    "markdown": "*"
+  },
+  "scripts": {
+
+  },
+  "bugs": {
+    "url": "https://github.com/jansanchez/redmine-issues/issues"
+  },
+  "homepage": "https://github.com/jansanchez/redmine-issues"
+}

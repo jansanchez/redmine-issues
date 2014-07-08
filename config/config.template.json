@@ -1,0 +1,19 @@
+{
+    "apiKey": "here_your_api_key",
+    "contentType": "application/json",
+    "domain": "domain.com",
+    "port": 80,
+    "issue": {
+        "status": {
+            "2": "En Curso",
+            "3": "Completado",
+            "13": "Asignado",
+            "29": "Nuevo",
+            "31": "Desarrollo Resuelto"
+        },
+        "type": {
+            "1": "Error",
+            "2": "Tarea"
+        }
+    }
+}
