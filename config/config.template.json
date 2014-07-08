@@ -1,6 +1,6 @@
 {
-    "apiKey": "here_your_api_key",
-    "contentType": "application/json",
+    "apikey": "here_your_api_key",
+    "contenttype": "application/json",
     "domain": "domain.com",
     "port": 80,
     "issue": {

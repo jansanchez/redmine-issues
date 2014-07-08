@@ -5,15 +5,15 @@
  */
 
 var fs = require('fs')
-  , program = require('commander')
   , path = require('path')
+  , mkdirp = require('mkdirp')
+  , monocle = require('monocle')()
+  , program = require('commander')
   , basename = path.basename
   , dirname = path.dirname
-  , resolve = path.resolve
   , exists = fs.existsSync || path.existsSync
   , join = path.join
-  , monocle = require('monocle')()
-  , mkdirp = require('mkdirp')
+  , resolve = path.resolve
   , Redmine = require('../');
 
 /**
@@ -21,8 +21,6 @@ var fs = require('fs')
  */
 
 function config(configValue) {
-
-  //console.log('configValue: '+configValue);
 
   var arrConfig = configValue.split(':'),
       key = arrConfig[0],
@@ -42,8 +40,7 @@ function config(configValue) {
   }
 
   if (value === undefined || value === " " || value === "") {
-    flag = false;
-    console.log("Favor ingresar una configuración válida(Ej: domain:yourdomain.com) sin espacios en blanco.");
+    console.log("Please enter a valid configuration(Ej. domain:yourdomain.com) without whitespaces.");
     process.exit();
   }
 
@@ -54,10 +51,10 @@ function config(configValue) {
     configuration.set(key, value);
     configuration.save();
 
-    console.log("Se registró correctamente {" + key + " : " + configuration.get(key) + "}");
-  
+    console.log("Set correctly {" + key + " : " + configuration.get(key) + "}");
+
   }else{
-    console.log("Favor ingresar un valor de configuración válido(domain, port, apikey, contenttype).");
+    console.log("Please enter a valid configuration value(domain, port, apikey, contenttype).");
   };
 
   process.exit();
@@ -67,14 +64,17 @@ function config(configValue) {
 
 var options = {};
 
+/*
+.option('-i, --integer <n>', 'An integer argument')
+.option('-o, --optional [value]', 'An optional value')
+.option('-v, --verbose', 'A value that can be increased')
+*/
+
+
 program
   .version(require('../package.json').version)
   .usage('[options] <file ...>')
-  .option('-i, --integer <n>', 'An integer argument')
-  .option('-o, --optional [value]', 'An optional value')
-  .option('-c, --config <key>:<value>', 'Configuration options', config)
-  .option('-v, --verbose', 'A value that can be increased');
-
+  .option('-c, --config <key>:<value>', 'Configuration options', config);
 
 program.on('--help', function(){
   console.log('  Examples:');
@@ -91,9 +91,9 @@ program.on('--help', function(){
   console.log('    # configure your content type');
   console.log('    $ redmine --config domain:application/json');
 
-
   console.log('');
 });
+
 
 program.parse(process.argv);
 
@@ -106,9 +106,6 @@ program.on('--config', function(){
   process.exit();
 });
 */
-
-
-
 
 // options given, parse them
 
@@ -142,18 +139,17 @@ options.watch = program.watch;
 var files = program.args;
 
 
-stdin();
+//stdin();
 
-
-console.log('files: ',files);
-
-
-
+//console.log('files: ',files);
 
 /**
  * Compile from stdin.
  */
 
+
+
+/*
 function stdin() {
   var buf = '';
 
@@ -164,7 +160,6 @@ function stdin() {
   process.stdin.on('data', function(chunk){ buf += chunk; });
 
   process.stdin.on('end', function(){
-
     var output = 'nada';
     process.stdout.write(output);
   }).resume();
@@ -174,9 +169,9 @@ function stdin() {
     process.stdin.emit('end');
     process.stdout.write('\n');
     process.exit();
-  })
+  });
 }
-
+*/
 
 
 
@@ -186,6 +181,7 @@ function stdin() {
  */
 
 /*
+
 function renderFile(path) {
   var re = /\.redmine_labs$/;
   fs.lstat(path, function(err, stat) {
@@ -229,3 +225,4 @@ function renderFile(path) {
   });
 }
 */
+
