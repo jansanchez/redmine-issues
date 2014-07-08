@@ -46,7 +46,7 @@ function config(configValue) {
 
   if (flag) {
 
-    var configuration = new Redmine.FileManager("../config/config.json");
+    var configuration = new Redmine.FileManager(Redmine.configFile);
 
     configuration.set(key, value);
     configuration.save();
@@ -69,7 +69,6 @@ var options = {};
 .option('-o, --optional [value]', 'An optional value')
 .option('-v, --verbose', 'A value that can be increased')
 */
-
 
 program
   .version(require('../package.json').version)
@@ -94,9 +93,7 @@ program.on('--help', function(){
   console.log('');
 });
 
-
 program.parse(process.argv);
-
 
 /*
 program.on('--config', function(){
