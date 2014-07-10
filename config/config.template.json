@@ -3,7 +3,7 @@
     "contenttype": "application/json",
     "domain": "domain.com",
     "port": 80,
-    "issue": {
+    "issues": {
         "status": {
             "2": "En Curso",
             "3": "Completado",
