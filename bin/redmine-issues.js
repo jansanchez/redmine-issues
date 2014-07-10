@@ -93,17 +93,13 @@ program.parse(process.argv);
 */
 
 
-if (program.issue){
-  options.issue = program.issue || 0;
-}
 
-if (program.percent){
-  options.percent = program.percent || 0;
-}
+options.issue = program.issue || 0;
 
-if (program.message){
-  options.message = program.message || "";
-}
+options.percent = program.percent || 0;
+
+options.message = program.message || "";
+
 
 
 /*
@@ -120,6 +116,7 @@ function issues(){
 
     });
 }
+
 
 
 issues();
