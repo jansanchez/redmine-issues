@@ -105,3 +105,21 @@ if (program.message){
   options.message = program.message || "";
 }
 
+
+/*
+* 
+*/
+
+function issues(){
+  var api = new Redmine.Api();
+    api.getIssue(options.issue, function(){
+
+      var issue = api.data.issue;
+      
+      api.updateIssue(options.percent, options.message);
+
+    });
+}
+
+
+issues();
