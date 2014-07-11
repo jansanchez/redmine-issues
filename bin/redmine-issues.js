@@ -93,24 +93,25 @@ program.parse(process.argv);
 */
 
 
-
 options.issue = program.issue || 0;
 options.percent = program.percent || 0;
 options.message = program.message || "";
 
 
-
 /*
-* 
+* issues
 */
 
 function issues(){
   var api = new Redmine.Api();
   api.getIssue(options.issue, function(){
-    var issue = api.data.issue;      
+    var issue = api.data.issue;
     api.updateIssue(options.percent, options.message);
   });
 }
 
-issues();
+
+if (program.percent!==0) {
+    issues();
+};
 
