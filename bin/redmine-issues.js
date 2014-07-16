@@ -49,17 +49,9 @@ function config(configValue) {
     var configuration = new Redmine.FileManager(Redmine.configFile);
     configuration.set(key, value);
     configuration.save();
-    if (configuration.get("language") === "en") {
-      console.log("Set correctly {" + key + " : " + configuration.get(key) + "}");      
-    }else{
-      console.log("Se estableció correctamente {" + key + " : " + configuration.get(key) + "}");      
-    };
+    console.log("Set correctly {" + key + " : " + configuration.get(key) + "}");
   }else{
-    if (configuration.get("language") === "en") {
-      console.log("Please enter a valid configuration value(domain, port, apikey, contenttype, language).");
-    }else{
-      console.log("Por favor ingrese una configuración válida(domain, port, apikey, contenttype, language).");
-    }
+    console.log("Please enter a valid configuration value(domain, port, apikey, contenttype).");
   };
   process.exit();
 };
@@ -73,12 +65,8 @@ program
   .usage('[options] <file ...>')
   .option('-c, --config <key>:<value>', 'Configuration options', config)
   .option('-i, --issue <issue>', 'issue id')
-  .option('-p, --percent <percent>', 'percent of progress')
-  .option('-m, --message <message>', 'your message or note')
-  .option('-e, --estimated <estimated>', 'estimated hours')
-  .option('-l, --list', 'list of issues');
-
-  //.option('-s, --spent <spent>', 'spent hours');
+  .option('-p, --percent <percent>', 'percent')
+  .option('-m, --message <message>', 'the message');
 
 program.on('--help', function(){
   console.log('  Examples:');
@@ -105,13 +93,13 @@ program.parse(process.argv);
 * Program options
 */
 
+
+
 options.issue = program.issue || 0;
 options.percent = program.percent || 0;
 options.message = program.message || "";
-options.estimated = program.estimated || 0;
-options.spent = program.spent || 0;
 
-options.list = program.list || false;
+
 
 /*
 * 
@@ -120,60 +108,10 @@ options.list = program.list || false;
 function issues(){
   var api = new Redmine.Api();
   api.getIssue(options.issue, function(){
-    var issue = api.dataObject.issue;
-    api.updateIssue(options.percent, options.message, options.estimated, options.spent);
+    var issue = api.data.issue;      
+    api.updateIssue(options.percent, options.message);
   });
 }
 
 issues();
 
-function issuesList(){
-  var api = new Redmine.Api();
-  api.getIssues(options.list, function(response){
-
-    var totalCount = response.total_count;
-    var offset = response.offset;
-    var limit = response.limit;
-
-    var issues = response.issues;
-    
-    console.log('- - - - -');
-    console.log('Summary');
-    console.log('- - - - -');
-
-    console.log('totalCount: ', totalCount);
-    console.log('offset: ', offset);
-    console.log('limit: ', limit);
-
-    console.log('- - - - -');
-
-    
-    for (var i = 0; i < issues.length; i++) {
-      
-      console.log('Proyecto: ' + issues[i].project.name);
-      if (issues[i].parent!==undefined) {
-        console.log('Tarea Padre: ' + issues[i].parent.id);        
-      };
-      console.log('ID: ' + issues[i].id);
-      console.log('Asunto: ' + issues[i].subject);
-      console.log('Tipo: ' + issues[i].tracker.name);
-      console.log('Estado: ' + issues[i].status.name);
-      console.log('Prioridad: ' + issues[i].priority.name);
-      console.log('Autor: ' + issues[i].author.name);
-      console.log('Asignado a: ' + issues[i].assigned_to.name);
-      console.log('Progreso: ' + issues[i].done_ratio+"%");
-      console.log('Fecha de inicio: ' + issues[i].start_date);
-
-      if (issues[i].due_date!==undefined) {
-        console.log('Fecha fin: ' + issues[i].due_date);
-      }
-      console.log('- - - - - - - - - - - - - - - - - - - - - - - -');
-    };
-    
-
-  });
-}
-
-if (options.list) {
-  issuesList();
-};
