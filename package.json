@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "cli-table": "^0.3.0",
+    "colors": "^0.6.2",
     "commander": "2.1.0",
     "mkdirp": "~0.3.5",
     "monocle": "1.1.51"

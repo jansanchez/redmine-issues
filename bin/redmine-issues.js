@@ -10,6 +10,7 @@ var fs = require('fs')
   , monocle = require('monocle')()
   , program = require('commander')
   , Table = require('cli-table')
+  , colors = require('colors')
   , basename = path.basename
   , dirname = path.dirname
   , exists = fs.existsSync || path.existsSync
@@ -34,6 +35,8 @@ function config(configValue) {
     case "apikey":
     case "contenttype":
     case "language":
+    case "head":
+    case "border":
       flag = true;
     break;
     default:
@@ -140,66 +143,73 @@ function issues(){
 
 function issuesList(){
   var api = new Redmine.Api();
+  var configuration = new Redmine.FileManager(Redmine.configFile);
+
   var queryObject = {};
 
   queryObject.limit = options.limit;
 
   api.getIssues(queryObject, function(response){
 
-    var totalCount = response.total_count;
-    var offset = response.offset;
-    var limit = response.limit;
     var issues = response.issues;
+    var arrStateName = [];
+    var otherStates = [];
     var stateName = "";
-    
-    //console.log('totalCount: ', totalCount);
-    //console.log('offset: ', offset);
-    //console.log('limit: ', limit);
-    
     var pattern = new RegExp(/([a-z\ ]+$)/gi);
-    var table3 = new Table({ head: ["ID", "Tipo", "Estado", "Asunto", "Avance"], colWidths: [7,10,12,60,8] });
+    var status_id = 0;
 
-    
+    var table3 = new Table(
+      { head: ["Proyecto", "ID", "Tipo", "Estado", "Asunto", "Avance"], 
+        colWidths: [13,7,10,12,50,8],
+        style: { head: [configuration.get("head")], border: [configuration.get("border")] }
+      });
+
     for (var i = 0; i < issues.length; i++) {
-
-      /*
-      var table2 = new Table({ head: ["", issues[i].project.name] });
-      table2.push(
-        { 'Asunto': [issues[i].subject] },
-        { 'ID': [issues[i].id] },
-        { 'Tipo': [issues[i].tracker.name] },
-        { 'Estado': [issues[i].status.name] },
-        { 'Fecha': [issues[i].start_date] },
-        { 'Progreso': [issues[i].done_ratio+'%'] }
-      );
-      console.log(table2.toString());
-      */
-
       pattern.lastIndex = 0;
-      stateName = issues[i].status.name.match(pattern);
+      arrStateName = issues[i].status.name.match(pattern);
 
-      table3.push([issues[i].id, issues[i].tracker.name, stateName[0], issues[i].subject, issues[i].done_ratio+'%']);
-      
-      /*
-      console.log('Proyecto: ' + issues[i].project.name);
-      if (issues[i].parent!==undefined) {
-        console.log('Tarea Padre: ' + issues[i].parent.id);        
-      };
-      console.log('ID: ' + issues[i].id);
-      console.log('Asunto: ' + issues[i].subject);
-      console.log('Tipo: ' + issues[i].tracker.name);
-      console.log('Estado: ' + issues[i].status.name);
-      console.log('Prioridad: ' + issues[i].priority.name);
-      console.log('Autor: ' + issues[i].author.name);
-      console.log('Asignado a: ' + issues[i].assigned_to.name);
-      console.log('Progreso: ' + issues[i].done_ratio+"%");
-      console.log('Fecha de inicio: ' + issues[i].start_date);
+      stateName = arrStateName[0].toString();
 
-      if (issues[i].due_date!==undefined) {
-        console.log('Fecha fin: ' + issues[i].due_date);
+      //console.log(issues[i].status.id);
+
+      status_id = Number(issues[i].status.id);
+
+      switch(status_id){
+        case 29: // Nuevo
+          stateName = stateName.yellow;
+        break;
+        case 2: // En curso
+          stateName = stateName.cyan;
+        break;
+        case 13: // Asignado
+          stateName = stateName.blue;
+        break;
+        case 16: // Completo
+        case 31: // Desarrollo Resuelto
+          stateName = "Completo".grey;
+        break;
+        case 33: // En Produccion
+          stateName = "Produccion".grey;
+        break;
+        case 22: // Conforme
+          stateName = "Conforme".grey;
+        break;
+        default:
+          stateName = stateName.grey;
+        break;
       }
-      console.log('- - - - - - - - - - - - - - - - - - - - - - - -');
-      */
+
+      var arrayTemp = [issues[i].project.name, issues[i].id.toString().magenta, issues[i].tracker.name, stateName, issues[i].subject, issues[i].done_ratio+'%'];
+
+      if (status_id === 29 || status_id === 2 || status_id === 13) {
+        table3.push(arrayTemp);
+      }else{
+        otherStates.push(arrayTemp);
+      };
+    };
+
+    for (var i = 0; i < otherStates.length; i++) {
+      table3.push(otherStates[i]);
     };
 
     console.log(table3.toString());
