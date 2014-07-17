@@ -9,6 +9,7 @@ var fs = require('fs')
   , mkdirp = require('mkdirp')
   , monocle = require('monocle')()
   , program = require('commander')
+  , Table = require('cli-table')
   , basename = path.basename
   , dirname = path.dirname
   , exists = fs.existsSync || path.existsSync
@@ -78,7 +79,8 @@ program
   .option('-p, --percent <percent>', 'percent of progress')
   .option('-m, --message <message>', 'your message or note')
   .option('-e, --estimated <estimated>', 'estimated hours')
-  .option('-l, --list', 'list of issues');
+  .option('-q, --query', 'query of issues')
+  .option('-l, --limit, <limit>', 'limit of issues');
   //.option('-s, --spent <spent>', 'spent hours');
 
 program.on('--help', function(){
@@ -111,7 +113,8 @@ options.percent = program.percent || 0;
 options.message = program.message || "";
 options.estimated = program.estimated || 0;
 
-options.list = program.list || false;
+options.query = program.query || false;
+options.limit = program.limit || 5;
 //options.spent = program.spent || 0;
 
 
@@ -137,25 +140,47 @@ function issues(){
 
 function issuesList(){
   var api = new Redmine.Api();
-  api.getIssues(options.list, function(response){
+  var queryObject = {};
+
+  queryObject.limit = options.limit;
+
+  api.getIssues(queryObject, function(response){
 
     var totalCount = response.total_count;
     var offset = response.offset;
     var limit = response.limit;
     var issues = response.issues;
+    var stateName = "";
     
-    console.log('- - - - -');
-    console.log('Summary');
-    console.log('- - - - -');
+    //console.log('totalCount: ', totalCount);
+    //console.log('offset: ', offset);
+    //console.log('limit: ', limit);
+    
+    var pattern = new RegExp(/([a-z\ ]+$)/gi);
+    var table3 = new Table({ head: ["ID", "Tipo", "Estado", "Asunto", "Avance"], colWidths: [7,10,12,60,8] });
 
-    console.log('totalCount: ', totalCount);
-    console.log('offset: ', offset);
-    console.log('limit: ', limit);
-
-    console.log('- - - - -');
     
     for (var i = 0; i < issues.length; i++) {
+
+      /*
+      var table2 = new Table({ head: ["", issues[i].project.name] });
+      table2.push(
+        { 'Asunto': [issues[i].subject] },
+        { 'ID': [issues[i].id] },
+        { 'Tipo': [issues[i].tracker.name] },
+        { 'Estado': [issues[i].status.name] },
+        { 'Fecha': [issues[i].start_date] },
+        { 'Progreso': [issues[i].done_ratio+'%'] }
+      );
+      console.log(table2.toString());
+      */
+
+      pattern.lastIndex = 0;
+      stateName = issues[i].status.name.match(pattern);
+
+      table3.push([issues[i].id, issues[i].tracker.name, stateName[0], issues[i].subject, issues[i].done_ratio+'%']);
       
+      /*
       console.log('Proyecto: ' + issues[i].project.name);
       if (issues[i].parent!==undefined) {
         console.log('Tarea Padre: ' + issues[i].parent.id);        
@@ -174,7 +199,11 @@ function issuesList(){
         console.log('Fecha fin: ' + issues[i].due_date);
       }
       console.log('- - - - - - - - - - - - - - - - - - - - - - - -');
+      */
     };
+
+    console.log(table3.toString());
+
   });
 }
 
@@ -183,14 +212,15 @@ function issuesList(){
 * Run Functions
 */
 
-if (program.percent!==0) {
+if (options.percent !== 0 ) {
   issues();
 }else{
-  if (options.message!=="") {
+  if (options.message !== "") {
     issues();
   };
 };
 
-if (options.list) {
+if (options.query) {
   issuesList();
 };
+

@@ -16,6 +16,7 @@
     "redmine": "./bin/redmine-issues.js"
   },
   "dependencies": {
+    "cli-table": "^0.3.0",
     "commander": "2.1.0",
     "mkdirp": "~0.3.5",
     "monocle": "1.1.51"
@@ -24,9 +25,7 @@
     "coffee-script": "*",
     "markdown": "*"
   },
-  "scripts": {
-
-  },
+  "scripts": {},
   "bugs": {
     "url": "https://github.com/jansanchez/redmine-issues/issues"
   },
