@@ -191,10 +191,9 @@ function issues(){
  */
 
 function issuesList(){
-  var api = new Redmine.Api();
-  var configuration = new Redmine.FileManager(Redmine.configFile);
-
-  var queryObject = {};
+  var api = new Redmine.Api(),
+      configuration = new Redmine.FileManager(Redmine.configFile),
+      queryObject = {};
 
   queryObject.limit = options.limit;
 
@@ -203,11 +202,10 @@ function issuesList(){
     var issues = response.issues,
     otherStates = [],
     stateName = "",
-    statusId = 0;
-
-    var table = new Table(
+    statusId = 0,
+    table = new Table(
       { head: ["Proyecto", "ID", "Tipo", "Estado", "Asunto", "Avance"], 
-        colWidths: [13,7,10,12,50,8],
+        colWidths: [13, 7, 10, 12, 50, 8],
         style: { head: [configuration.get("head")], border: [configuration.get("border")] }
       });
 
@@ -302,8 +300,12 @@ if (options.percent !== 0 ) {
   };
 };
 
-if (options.percent === 0 && options.message === "" && options.issue !== 0) {
+if (options.percent === 0 && options.message === "" && options.issue !== 0 && options.estimated === 0) {
   issueDetail();
+}else{
+  if (options.estimated !== 0) {
+    issues();
+  };
 };
 
 if (options.query) {
