@@ -202,7 +202,7 @@ function issuesList(){
     stateName = "",
     statusId = 0;
 
-    var table3 = new Table(
+    var table = new Table(
       { head: ["Proyecto", "ID", "Tipo", "Estado", "Asunto", "Avance"], 
         colWidths: [13,7,10,12,50,8],
         style: { head: [configuration.get("head")], border: [configuration.get("border")] }
@@ -220,17 +220,17 @@ function issuesList(){
       var arrayTemp = [issues[i].project.name, issues[i].id.toString().magenta, issues[i].tracker.name, stateName, issues[i].subject, issues[i].done_ratio+'%'];
 
       if (statusId === 29 || statusId === 2 || statusId === 13) {
-        table3.push(arrayTemp);
+        table.push(arrayTemp);
       }else{
         otherStates.push(arrayTemp);
       };
     };
 
     for (var i = 0; i < otherStates.length; i++) {
-      table3.push(otherStates[i]);
+      table.push(otherStates[i]);
     };
 
-    console.log(table3.toString());
+    console.log(table.toString());
 
   });
 }
@@ -255,25 +255,35 @@ function issueDetail(){
     var issue = response.issue,
     otherStates = [],
     stateName = "",
+    description = "",
     statusId = 0;
 
-    var table3 = new Table(
-      { head: ["Proyecto", "ID", "Tipo", "Estado", "Asunto", "Avance"], 
-        colWidths: [13,7,10,12,50,8],
-        style: { head: [configuration.get("head")], border: [configuration.get("border")] }
-      });
+    status = issue.status;
+    statusId = Number(status.id);
+    stateName = getStateName(status);
 
-      //console.log(issue[i].status.id);
+    var table = new Table({style: { head: [configuration.get("head")], border: [configuration.get("border")] }});
 
-      status = issue.status;
-      statusId = Number(status.id);
-      stateName = getStateName(status);
+    table.push(
+      { 'Proyecto': [issue.project.name] }, 
+      { 'ID': [issue.id.toString().magenta] },
+      { 'Asunto': [issue.subject] },
+      { 'Tipo': [issue.tracker.name] },
+      { 'Estado': [stateName] },
+      { 'Asignado': [ issue.author.name.grey + "(".grey +issue.author.id.toString().grey+")".grey + " --> ".green + issue.assigned_to.name + "("+issue.assigned_to.id.toString().yellow+")"] },
+      { 'Fecha de inicio': [issue.start_date]},
+      { 'Avance': [issue.done_ratio+'%'] }
+    );
 
-      var arrayTemp = [issue.project.name, issue.id.toString().magenta, issue.tracker.name, stateName, issue.subject, issue.done_ratio+'%'];
+    console.log(table.toString());
 
-      table3.push(arrayTemp);
-      
-      console.log(table3.toString());
+    description = issue.description;
+    description = description.replace(/<pre>/g,"");
+    description = description.replace(/<\/pre>/g,"");
+
+    console.log(" Descripción: ".green);
+    console.log(description);
+    console.log("");
 
   });
 }
@@ -298,8 +308,11 @@ if (options.percent === 0 && options.message === "" && options.issue !== 0) {
   issueDetail();
 };
 
-
 if (options.query) {
   issuesList();
+}else{
+  if (options.limit) {
+    console.log('Falta el parametro "-q"');
+  };
 };
 
