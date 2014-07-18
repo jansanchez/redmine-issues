@@ -70,8 +70,8 @@ function config(configValue) {
 };
 
 /*
-* Program
-*/
+ * Program
+ */
 
 program
   .version(require('../package.json').version)
@@ -109,8 +109,8 @@ program.on('--help', function(){
 program.parse(process.argv);
 
 /*
-* Program options
-*/
+ * Program options
+ */
 
 var options = {};
 
@@ -124,13 +124,13 @@ options.limit = program.limit || 5;
 
 
 /*
-* Functions
-*/
+ * Functions
+ */
 
 
 /*
-* Function getStateName
-*/
+ * Function getStateName
+ */
 
 function getStateName(status){
   var pattern = new RegExp(/([a-z\ ]+$)/gi);
@@ -174,8 +174,8 @@ function getStateName(status){
 
 
 /*
-* Function issues
-*/
+ * Function issues
+ */
 
 function issues(){
   var api = new Redmine.Api();
@@ -187,8 +187,8 @@ function issues(){
 
 
 /*
-* Function issuesList
-*/
+ * Function issuesList
+ */
 
 function issuesList(){
   var api = new Redmine.Api();
@@ -212,8 +212,6 @@ function issuesList(){
       });
 
     for (var i = 0; i < issues.length; i++) {
-
-      //console.log(issues[i].status.id);
 
       status = issues[i].status;
       statusId = Number(status.id);
@@ -240,8 +238,8 @@ function issuesList(){
 
 
 /*
-* Function issueDetail
-*/
+ * Function issueDetail
+ */
 function issueDetail(){
   var api = new Redmine.Api();
   var configuration = new Redmine.FileManager(Redmine.configFile);
@@ -293,8 +291,8 @@ function issueDetail(){
 
 
 /*
-* Run Functions
-*/
+ * Run Functions
+ */
 
 if (options.percent !== 0 ) {
   issues();
@@ -310,10 +308,5 @@ if (options.percent === 0 && options.message === "" && options.issue !== 0) {
 
 if (options.query) {
   issuesList();
-}else{
-  if (options.limit) {
-    console.log('Falta agregar el opción "-q"');
-    console.log('Si desea obtener más ayuda use la opción "-h"');
-  };
-};
+}
 
