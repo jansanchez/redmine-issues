@@ -125,6 +125,52 @@ options.limit = program.limit || 5;
 * Functions
 */
 
+
+/*
+* Function getStateName
+*/
+
+function getStateName(status){
+  var pattern = new RegExp(/([a-z\ ]+$)/gi);
+  pattern.lastIndex = 0;
+
+  var arrStateName = status.name.match(pattern),
+  stateName = arrStateName[0].toString();
+
+  switch(status.id){
+    case 0: // None
+      stateName = "Ninguno".yellow;
+    break;
+    case 29: // Nuevo
+      stateName = stateName.yellow;
+    break;
+    case 2: // En curso
+      stateName = stateName.cyan;
+    break;
+    case 13: // Asignado
+      stateName = stateName.blue;
+    break;
+    case 16: // Completo
+    case 31: // Desarrollo Resuelto
+      stateName = "Completo".grey;
+    break;
+    case 33: // En Produccion
+      stateName = "Produccion".grey;
+    break;
+    case 22: // Conforme
+      stateName = "Conforme".grey;
+    break;
+    case 39: // Obs. in Pre
+      stateName = "Obs. Prep".grey;
+    break;
+    default:
+      stateName = stateName.grey;
+    break;
+  }
+  return stateName;
+}
+
+
 /*
 * Function issues
 */
@@ -151,12 +197,10 @@ function issuesList(){
 
   api.getIssues(queryObject, function(response){
 
-    var issues = response.issues;
-    var arrStateName = [];
-    var otherStates = [];
-    var stateName = "";
-    var pattern = new RegExp(/([a-z\ ]+$)/gi);
-    var status_id = 0;
+    var issues = response.issues,
+    otherStates = [],
+    stateName = "",
+    statusId = 0;
 
     var table3 = new Table(
       { head: ["Proyecto", "ID", "Tipo", "Estado", "Asunto", "Avance"], 
@@ -165,43 +209,17 @@ function issuesList(){
       });
 
     for (var i = 0; i < issues.length; i++) {
-      pattern.lastIndex = 0;
-      arrStateName = issues[i].status.name.match(pattern);
-
-      stateName = arrStateName[0].toString();
 
       //console.log(issues[i].status.id);
 
-      status_id = Number(issues[i].status.id);
+      status = issues[i].status;
+      statusId = Number(status.id);
 
-      switch(status_id){
-        case 29: // Nuevo
-          stateName = stateName.yellow;
-        break;
-        case 2: // En curso
-          stateName = stateName.cyan;
-        break;
-        case 13: // Asignado
-          stateName = stateName.blue;
-        break;
-        case 16: // Completo
-        case 31: // Desarrollo Resuelto
-          stateName = "Completo".grey;
-        break;
-        case 33: // En Produccion
-          stateName = "Produccion".grey;
-        break;
-        case 22: // Conforme
-          stateName = "Conforme".grey;
-        break;
-        default:
-          stateName = stateName.grey;
-        break;
-      }
+      stateName = getStateName(status);
 
       var arrayTemp = [issues[i].project.name, issues[i].id.toString().magenta, issues[i].tracker.name, stateName, issues[i].subject, issues[i].done_ratio+'%'];
 
-      if (status_id === 29 || status_id === 2 || status_id === 13) {
+      if (statusId === 29 || statusId === 2 || statusId === 13) {
         table3.push(arrayTemp);
       }else{
         otherStates.push(arrayTemp);
@@ -219,16 +237,67 @@ function issuesList(){
 
 
 /*
+* Function issueDetail
+*/
+function issueDetail(){
+  var api = new Redmine.Api();
+  var configuration = new Redmine.FileManager(Redmine.configFile);
+
+  var queryObject = {};
+  queryObject.limit = 1;
+
+  if (options.issue !== 0) {
+    queryObject.issue = options.issue;
+  };
+
+  api.getIssues(queryObject, function(response){
+
+    var issue = response.issue,
+    otherStates = [],
+    stateName = "",
+    statusId = 0;
+
+    var table3 = new Table(
+      { head: ["Proyecto", "ID", "Tipo", "Estado", "Asunto", "Avance"], 
+        colWidths: [13,7,10,12,50,8],
+        style: { head: [configuration.get("head")], border: [configuration.get("border")] }
+      });
+
+      //console.log(issue[i].status.id);
+
+      status = issue.status;
+      statusId = Number(status.id);
+      stateName = getStateName(status);
+
+      var arrayTemp = [issue.project.name, issue.id.toString().magenta, issue.tracker.name, stateName, issue.subject, issue.done_ratio+'%'];
+
+      table3.push(arrayTemp);
+      
+      console.log(table3.toString());
+
+  });
+}
+
+
+/*
 * Run Functions
 */
 
+// si el porcentaje es distinto de cero entonces actualizo el porcentaje
 if (options.percent !== 0 ) {
   issues();
 }else{
+  // si el mensaje es distinto de vacio entonces actualizo el mensaje
   if (options.message !== "") {
     issues();
   };
 };
+
+if (options.percent === 0 && options.message === "" && options.issue !== 0) {
+  //console.log('su id es: '+options.issue);
+  issueDetail();
+};
+
 
 if (options.query) {
   issuesList();
