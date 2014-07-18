@@ -19,7 +19,7 @@ var fs = require('fs')
   , Redmine = require('../');
 
 /**
- * Functions.
+ * Main Config.
  */
 
 function config(configValue) {
@@ -69,15 +69,14 @@ function config(configValue) {
   process.exit();
 };
 
-// redmine-issues options
-
-var options = {};
-
+/*
+* Program
+*/
 
 program
   .version(require('../package.json').version)
-  .usage('[options] <file ...>')
-  .option('-c, --config <key>:<value>', 'Configuration options', config)
+  .usage('[options]')
+  .option('-c, --config <key>:<value>', 'configuration options', config)
   .option('-i, --issue <issue>', 'issue id')
   .option('-p, --percent <percent>', 'percent of progress')
   .option('-m, --message <message>', 'your message or note')
@@ -100,22 +99,25 @@ program.on('--help', function(){
   console.log('');
   console.log('    # configure your content type');
   console.log('    $ redmine --config domain:application/json');
+  console.log('');
+  console.log('    # configure your language');
+  console.log('    $ redmine --config language:es');
 
   console.log('');
 });
 
 program.parse(process.argv);
 
-
 /*
 * Program options
 */
+
+var options = {};
 
 options.issue = program.issue || 0;
 options.percent = program.percent || 0;
 options.message = program.message || "";
 options.estimated = program.estimated || 0;
-
 options.query = program.query || false;
 options.limit = program.limit || 5;
 //options.spent = program.spent || 0;
@@ -182,6 +184,7 @@ function issues(){
     api.updateIssue(options.percent, options.message, options.estimated);
   });
 }
+
 
 /*
 * Function issuesList
@@ -293,18 +296,15 @@ function issueDetail(){
 * Run Functions
 */
 
-// si el porcentaje es distinto de cero entonces actualizo el porcentaje
 if (options.percent !== 0 ) {
   issues();
 }else{
-  // si el mensaje es distinto de vacio entonces actualizo el mensaje
   if (options.message !== "") {
     issues();
   };
 };
 
 if (options.percent === 0 && options.message === "" && options.issue !== 0) {
-  //console.log('su id es: '+options.issue);
   issueDetail();
 };
 
@@ -312,7 +312,8 @@ if (options.query) {
   issuesList();
 }else{
   if (options.limit) {
-    console.log('Falta el parametro "-q"');
+    console.log('Falta agregar el opción "-q"');
+    console.log('Si desea obtener más ayuda use la opción "-h"');
   };
 };
 
