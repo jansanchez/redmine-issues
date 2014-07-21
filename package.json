@@ -29,7 +29,8 @@
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-watch": "^0.6.1",
     "markdown": "*",
-    "mocha": "^1.20.1"
+    "mocha": "^1.20.1",
+    "should": "^4.0.4"
   },
   "scripts": {},
   "bugs": {
