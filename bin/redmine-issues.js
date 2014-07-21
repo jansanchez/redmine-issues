@@ -9,8 +9,8 @@ var fs = require('fs'),
     mkdirp = require('mkdirp'),
     monocle = require('monocle')(),
     program = require('commander'),
-    Table = require('cli-table'),
     colors = require('colors'),
+    Table = require('cli-table'),
     basename = path.basename,
     dirname = path.dirname,
     exists = fs.existsSync || path.existsSync,
@@ -24,10 +24,11 @@ var fs = require('fs'),
 
 function config(configValue) {
 
-  var arrConfig = configValue.split(':'),
-      key = arrConfig[0],
-      value = arrConfig[1],
-      flag = false;
+  var collectionConfig = configValue.split(':'),
+      key = collectionConfig[0],
+      value = collectionConfig[1],
+      flag = false,
+      configuration = new Redmine.FileManager(Redmine.configFile);
 
   switch (key){
     case "domain":
@@ -48,8 +49,6 @@ function config(configValue) {
     console.log("Please enter a valid configuration(Ej. domain:yourdomain.com) without whitespaces.");
     process.exit();
   }
-
-  var configuration = new Redmine.FileManager(Redmine.configFile);
 
   if (flag) {
     configuration.set(key, value);
@@ -128,8 +127,8 @@ function getStateName(status){
   var pattern = new RegExp(/([a-z\ ]+$)/gi);
   pattern.lastIndex = 0;
 
-  var arrStateName = status.name.match(pattern),
-  stateName = arrStateName[0].toString();
+  var collectionStateName = status.name.match(pattern),
+  stateName = collectionStateName[0].toString();
 
   switch(status.id){
     case 0: // None
@@ -172,7 +171,6 @@ function getStateName(status){
 function issues(){
   var api = new Redmine.Api();
   api.getIssue(options.issue, function(){
-    var issue = api.dataObject.issue;
     api.updateIssue(options.percent, options.message, options.estimated);
   });
 }
@@ -193,6 +191,7 @@ function issuesList(){
 
     var issues = response.issues,
     otherStates = [],
+    collectionTemp = [],
     stateName = "",
     status = {},
     statusId = 0,
@@ -206,15 +205,14 @@ function issuesList(){
 
       status = issues[i].status;
       statusId = Number(status.id);
-
       stateName = getStateName(status);
-
-      var arrayTemp = [issues[i].project.name, issues[i].id.toString().magenta, issues[i].tracker.name, stateName, issues[i].subject, issues[i].done_ratio+'%'];
+      
+      collectionTemp = [issues[i].project.name, issues[i].id.toString().magenta, issues[i].tracker.name, stateName, issues[i].subject, issues[i].done_ratio+'%'];
 
       if (statusId === 29 || statusId === 2 || statusId === 13) {
-        table.push(arrayTemp);
+        table.push(collectionTemp);
       }else{
-        otherStates.push(arrayTemp);
+        otherStates.push(collectionTemp);
       }
 
     }
