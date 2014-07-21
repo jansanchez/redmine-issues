@@ -4,19 +4,19 @@
  * Module dependencies.
  */
 
-var fs = require('fs')
-  , path = require('path')
-  , mkdirp = require('mkdirp')
-  , monocle = require('monocle')()
-  , program = require('commander')
-  , Table = require('cli-table')
-  , colors = require('colors')
-  , basename = path.basename
-  , dirname = path.dirname
-  , exists = fs.existsSync || path.existsSync
-  , join = path.join
-  , resolve = path.resolve
-  , Redmine = require('../');
+var fs = require('fs'),
+    path = require('path'),
+    mkdirp = require('mkdirp'),
+    monocle = require('monocle')(),
+    program = require('commander'),
+    Table = require('cli-table'),
+    colors = require('colors'),
+    basename = path.basename,
+    dirname = path.dirname,
+    exists = fs.existsSync || path.existsSync,
+    join = path.join,
+    resolve = path.resolve,
+    Redmine = require('../');
 
 /**
  * Main Config.
@@ -49,8 +49,9 @@ function config(configValue) {
     process.exit();
   }
 
+  var configuration = new Redmine.FileManager(Redmine.configFile);
+
   if (flag) {
-    var configuration = new Redmine.FileManager(Redmine.configFile);
     configuration.set(key, value);
     configuration.save();
 
@@ -58,16 +59,16 @@ function config(configValue) {
       console.log("Set correctly {" + key + " : " + configuration.get(key) + "}");      
     }else{
       console.log("Se estableció correctamente {" + key + " : " + configuration.get(key) + "}");      
-    };
+    }
   }else{
     if (configuration.get("language") === "en") {
       console.log("Please enter a valid configuration value(domain, port, apikey, contenttype, language).");
     }else{
       console.log("Por favor ingrese una configuración válida(domain, port, apikey, contenttype, language).");
     }
-  };
+  }
   process.exit();
-};
+}
 
 /*
  * Program.
@@ -202,6 +203,7 @@ function issuesList(){
     var issues = response.issues,
     otherStates = [],
     stateName = "",
+    status = {},
     statusId = 0,
     table = new Table(
       { head: ["Proyecto", "ID", "Tipo", "Estado", "Asunto", "Avance"], 
@@ -222,12 +224,12 @@ function issuesList(){
         table.push(arrayTemp);
       }else{
         otherStates.push(arrayTemp);
-      };
-    };
+      }
+    }
 
-    for (var i = 0; i < otherStates.length; i++) {
-      table.push(otherStates[i]);
-    };
+    for (var j = 0; j < otherStates.length; j++) {
+      table.push(otherStates[j]);
+    }
 
     console.log(table.toString());
 
@@ -247,7 +249,7 @@ function issueDetail(){
 
   if (options.issue !== 0) {
     queryObject.issue = options.issue;
-  };
+  }
 
   api.getIssues(queryObject, function(response){
 
@@ -255,7 +257,8 @@ function issueDetail(){
     otherStates = [],
     stateName = "",
     description = "",
-    statusId = 0;
+    statusId = 0,
+    status = {};
 
     status = issue.status;
     statusId = Number(status.id);
@@ -297,16 +300,16 @@ if (options.percent !== 0 ) {
 }else{
   if (options.message !== "") {
     issues();
-  };
-};
+  }
+}
 
 if (options.percent === 0 && options.message === "" && options.issue !== 0 && options.estimated === 0) {
   issueDetail();
 }else{
   if (options.estimated !== 0) {
     issues();
-  };
-};
+  }
+}
 
 if (options.query) {
   issuesList();
