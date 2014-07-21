@@ -70,7 +70,7 @@ function config(configValue) {
 };
 
 /*
- * Program
+ * Program.
  */
 
 program
@@ -109,7 +109,7 @@ program.on('--help', function(){
 program.parse(process.argv);
 
 /*
- * Program options
+ * Program options.
  */
 
 var options = {};
@@ -124,12 +124,12 @@ options.limit = program.limit || 5;
 
 
 /*
- * Functions
+ * Functions.
  */
 
 
 /*
- * Function getStateName
+ * Function getStateName.
  */
 
 function getStateName(status){
@@ -174,7 +174,7 @@ function getStateName(status){
 
 
 /*
- * Function issues
+ * Function issues.
  */
 
 function issues(){
@@ -187,7 +187,7 @@ function issues(){
 
 
 /*
- * Function issuesList
+ * Function issuesList.
  */
 
 function issuesList(){
@@ -236,7 +236,7 @@ function issuesList(){
 
 
 /*
- * Function issueDetail
+ * Function issueDetail.
  */
 function issueDetail(){
   var api = new Redmine.Api();
@@ -289,7 +289,7 @@ function issueDetail(){
 
 
 /*
- * Run Functions
+ * Run Functions.
  */
 
 if (options.percent !== 0 ) {
