@@ -54,18 +54,9 @@ function config(configValue) {
   if (flag) {
     configuration.set(key, value);
     configuration.save();
-
-    if (configuration.get("language") === "en") {
-      console.log("Set correctly {" + key + " : " + configuration.get(key) + "}");      
-    }else{
-      console.log("Se estableció correctamente {" + key + " : " + configuration.get(key) + "}");      
-    }
+    console.log("Set correctly {" + key + " : " + configuration.get(key) + "}");
   }else{
-    if (configuration.get("language") === "en") {
-      console.log("Please enter a valid configuration value(domain, port, apikey, contenttype, language).");
-    }else{
-      console.log("Por favor ingrese una configuración válida(domain, port, apikey, contenttype, language).");
-    }
+    console.log("Please enter a valid configuration value(domain, port, apikey, contenttype, language).");
   }
   process.exit();
 }
@@ -142,26 +133,26 @@ function getStateName(status){
 
   switch(status.id){
     case 0: // None
-      stateName = "Ninguno".yellow;
+      stateName = "None".yellow;
     break;
-    case 29: // Nuevo
+    case 29: // New
       stateName = stateName.yellow;
     break;
-    case 2: // En curso
+    case 2: // In Progress
       stateName = stateName.cyan;
     break;
-    case 13: // Asignado
+    case 13: // Assigned
       stateName = stateName.blue;
     break;
-    case 16: // Completo
-    case 31: // Desarrollo Resuelto
-      stateName = "Completo".grey;
+    case 16: // Completed
+    case 31: // Solved development
+      stateName = "Completed".grey;
     break;
-    case 33: // En Produccion
-      stateName = "Produccion".grey;
+    case 33: // Production
+      stateName = "Production".grey;
     break;
     case 22: // Conforme
-      stateName = "Conforme".grey;
+      stateName = "According".grey;
     break;
     case 39: // Obs. in Pre
       stateName = "Obs. Prep".grey;
@@ -206,7 +197,7 @@ function issuesList(){
     status = {},
     statusId = 0,
     table = new Table(
-      { head: ["Proyecto", "ID", "Tipo", "Estado", "Asunto", "Avance"], 
+      { head: [configuration.getCaption("project"), configuration.getCaption("id"), configuration.getCaption("type"), configuration.getCaption("status"), configuration.getCaption("subject"), configuration.getCaption("progress")], 
         colWidths: [13, 7, 10, 12, 50, 8],
         style: { head: [configuration.get("head")], border: [configuration.get("border")] }
       });
@@ -225,6 +216,7 @@ function issuesList(){
       }else{
         otherStates.push(arrayTemp);
       }
+
     }
 
     for (var j = 0; j < otherStates.length; j++) {
@@ -241,8 +233,8 @@ function issuesList(){
  * Function issueDetail.
  */
 function issueDetail(){
-  var api = new Redmine.Api();
-  var configuration = new Redmine.FileManager(Redmine.configFile);
+  var api = new Redmine.Api(),
+  configuration = new Redmine.FileManager(Redmine.configFile);
 
   var queryObject = {};
   queryObject.limit = 1;
@@ -257,8 +249,16 @@ function issueDetail(){
     otherStates = [],
     stateName = "",
     description = "",
+    status = {},
     statusId = 0,
-    status = {};
+    newProject = {},
+    newId = {},
+    newSubject = {},
+    newType = {},
+    newStatus = {},
+    newAssigned = {},
+    newStartDate = {},
+    newProgress = {};
 
     status = issue.status;
     statusId = Number(status.id);
@@ -266,16 +266,16 @@ function issueDetail(){
 
     var table = new Table({style: { head: [configuration.get("head")], border: [configuration.get("border")] }});
 
-    table.push(
-      { 'Proyecto': [issue.project.name] }, 
-      { 'ID': [issue.id.toString().magenta] },
-      { 'Asunto': [issue.subject] },
-      { 'Tipo': [issue.tracker.name] },
-      { 'Estado': [stateName] },
-      { 'Asignado': [ issue.author.name.grey + "(".grey +issue.author.id.toString().grey+")".grey + " --> ".green + issue.assigned_to.name + "("+issue.assigned_to.id.toString().yellow+")"] },
-      { 'Fecha de inicio': [issue.start_date]},
-      { 'Avance': [issue.done_ratio+'%'] }
-    );
+    newProject[configuration.getCaption("project")] = [issue.project.name];
+    newId[configuration.getCaption("id")] = [issue.id.toString().magenta];
+    newSubject[configuration.getCaption("subject")] = [issue.subject];
+    newType[configuration.getCaption("type")] = [issue.tracker.name];
+    newStatus[configuration.getCaption("status")] = [stateName];
+    newAssigned[configuration.getCaption("assigned")] = [issue.author.name.grey + "(".grey +issue.author.id.toString().grey+")".grey + " --> ".green + issue.assigned_to.name + "("+issue.assigned_to.id.toString().yellow+")"];
+    newStartDate[configuration.getCaption("start_date")] = [issue.start_date];
+    newProgress[configuration.getCaption("progress")] = [issue.done_ratio+'%'];
+
+    table.push(newProject, newId, newSubject, newType, newStatus, newAssigned, newStartDate, newProgress);
 
     console.log(table.toString());
 
@@ -283,7 +283,7 @@ function issueDetail(){
     description = description.replace(/<pre>/g,"");
     description = description.replace(/<\/pre>/g,"");
 
-    console.log(" Descripción: ".green);
+    console.log(" Description: ".green);
     console.log(description);
     console.log("");
 

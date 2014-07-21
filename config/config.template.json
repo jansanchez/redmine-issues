@@ -3,20 +3,17 @@
     "contenttype": "application/json",
     "domain": "domain.com",
     "port": 80,
-    "issues": {
-        "status": {
-            "2": "En Curso",
-            "3": "Completado",
-            "13": "Asignado",
-            "29": "Nuevo",
-            "31": "Desarrollo Resuelto"
-        },
-        "type": {
-            "1": "Error",
-            "2": "Tarea"
-        }
-    },
-    "language" : "en",
-    "head" : "green",
-    "border" : "cyan"
+    "language": "en",
+    "head": "green",
+    "border": "cyan",
+    "caption": {
+        "project": "Project",
+        "id": "ID",
+        "subject": "Subject",
+        "type": "Type",
+        "status": "Status",
+        "assigned": "Assigned",
+        "start_date": "Start Date",
+        "progress": "Progress"
+    }
 }
