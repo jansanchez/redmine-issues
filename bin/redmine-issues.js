@@ -314,4 +314,3 @@ if (options.percent === 0 && options.message === "" && options.issue !== 0 && op
 if (options.query) {
   issuesList();
 }
-
