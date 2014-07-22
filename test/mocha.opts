@@ -1,3 +1,4 @@
 --require assert
 --require should
 --reporter spec
+--recursive
