@@ -1,4 +1,7 @@
-redmine-issues
-==============
+[Redmine-Issues](https://github.com/jansanchez/redmine-issues) - NodeJs Redmine Issues API Client
+==================================================
 
-redmine-issues
+README
+--------------------------------------
+
+NodeJs Redmine Issues API Client
