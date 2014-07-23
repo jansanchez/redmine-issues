@@ -1,7 +1,7 @@
 {
   "name": "redmine-issues",
   "description": "NodeJs Redmine Issues API Client",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": {
     "name": "Jan Sanchez A.",
     "email": "joejansanchez@gmail.com"
