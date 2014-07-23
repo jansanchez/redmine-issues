@@ -1,7 +1,7 @@
 {
   "name": "redmine-issues",
   "description": "NodeJs Redmine Issues API Client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Jan Sanchez A.",
     "email": "joejansanchez@gmail.com"
@@ -32,7 +32,11 @@
     "mocha": "^1.20.1",
     "should": "^4.0.4"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "npm install && grunt",
+    "start":"grunt",
+    "test":"mocha"
+  },
   "bugs": {
     "url": "https://github.com/jansanchez/redmine-issues/issues"
   },
