@@ -15,10 +15,10 @@ npm install -g redmine-issues
 ## Options
 
  - `-h, --help`  Get usage information.
- - `-V, --version`  Get the version number.
+ - `-V, --version`  Get version number.
  - `-c, --config`  Set main configuration.
- - `-q, --query`  Get issues for your user.
- - `-l, --limit`  Limit issues query.
+ - `-q, --query`  Get user issues.
+ - `-l, --limit`  Limit the number of query issues.
  - `-i, --issue`  Set and Get issue information.
  - `-p, --percent`  Set issue percent.
  - `-m, --message`  Set issue message/note.
@@ -29,7 +29,7 @@ npm install -g redmine-issues
 Type: `String`
 Syntax: `key:value`
 
-Set main configuration, can only be used with `sudo`, for security reasons.
+For security reasons, setting the main configuration can only be used with `sudo`.
 
 #### domain
 Required: `true`
@@ -135,9 +135,8 @@ redmine -i 45678 -p 30 -m "my note" -e 5
 
 ### Additional features
 
-If you are using `git` and your branch is called `issues#45678` then redmine-issues automatically recognize the issue id is `45678` and then not necessary that you indicate the issue id.
-
-So to update this issue only write:
+If you're using git and the name of your branch is issues#45678 then redmine-issues automatically recognizes the issue id (45678) so that you don't have to indicate it.
+so that you don't have to type it.
 
 ```
 redmine -p 35
