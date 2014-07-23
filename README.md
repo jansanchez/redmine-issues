@@ -1,4 +1,5 @@
 
+
 # Redmine Issues Rest API [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
 
 > Redmine Issues Rest API Client for node.js
@@ -81,6 +82,68 @@ Default: `5`
 ```
 redmine -q -l 20
 ```
+
+### -i, --issue
+Type: `Number`
+
+Set and Get issue information.
+
+### Get
+
+#### -i, Get information of issue #45678.
+
+```
+redmine -i 45678
+```
+
+### Set
+
+#### -p, --percent
+Set progress to 15%.
+
+```
+redmine -i 45678 -p 15
+```
+
+#### -m, --message
+Set note.
+
+```
+redmine -i 45678 -m "my note"
+```
+
+#### -e, --estimated
+Set estimated hours to 9.
+
+```
+redmine -i 45678 -e 9
+```
+
+### Combining options
+
+Set percent to 25% and Set note.
+
+```
+redmine -i 45678 -p 25 -m "my note"
+```
+
+Set percent to 30%, Set note and Set estimated hours to 5.
+
+```
+redmine -i 45678 -p 30 -m "my note" -e 5
+```
+
+### Additional features
+
+If you are using `git` and your branch is called `issues#45678` then redmine-issues automatically recognize the issue id is `45678` and then not necessary that you indicate the issue id.
+
+So to update this issue only write:
+
+```
+redmine -p 35
+```
+
+No need to specify the id of the issue.
 
 
 [downloads-image]: http://img.shields.io/npm/dm/redmine-issues.svg
