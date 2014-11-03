@@ -151,3 +151,4 @@ No need to specify the id of the issue.
 
 [travis-url]: https://travis-ci.org/jansanchez/redmine-issues
 [travis-image]: http://img.shields.io/travis/jansanchez/redmine-issues.svg
+
